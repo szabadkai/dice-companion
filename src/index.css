@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Special+Elite&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ─── Design tokens ──────────────────────────────────────────────── */
+:root {
+  --paper:    #f3ecdd;
+  --paper-2:  #ebe2cf;
+  --ink:      #1a1614;
+  --ink-2:    #3a332d;
+  --muted:    #8a7f6f;
+  --line:     #2b2620;
+  --blood:    #a01818;
+  --blood-2:  #d62828;
+  --gold:     #a8842a;
+  --bone:     #e8dfc9;
+  --atk-tint: #e8dfc9;
+  --def-tint: #d5d0be;
+
+  --font-body:    'Kalam', cursive;
+  --font-hand:    'Caveat', cursive;
+  --font-display: 'Special Elite', serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --r-die:  7px;
+  --r-btn:  10px;
+  --r-card: 14px;
+  --r-pill: 999px;
+
+  --shadow-sm: 2px 2px 0 var(--ink);
+  --shadow-md: 3px 3px 0 var(--ink);
+  --shadow-lg: 4px 4px 0 var(--ink);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  height: 100%;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  height: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overscroll-behavior: none;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button {
+  font-family: var(--font-display);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  -webkit-touch-callout: none;
+}
+
+.blood  { color: var(--blood); }
+.muted  { color: var(--muted); }
+.row    { display: flex; align-items: center; gap: 6px; }
+.grow   { flex: 1; }
+.center { display: flex; align-items: center; justify-content: center; }

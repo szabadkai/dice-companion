@@ -1,0 +1,166 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--paper);
+  overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1.5px dashed var(--ink);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.title { text-transform: uppercase; }
+
+.headerRight { display: flex; gap: 6px; }
+
+.ghostBtn {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* ── Mirror grid ─────────────────────────────────────────────── */
+.mirror {
+  display: grid;
+  grid-template-rows: 1fr 40px 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Halves ──────────────────────────────────────────────────── */
+.half {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.top {
+  transform: rotate(180deg);
+  background: linear-gradient(to top, rgba(160, 24, 24, 0.06), transparent 70%);
+}
+
+.bot {
+  background: linear-gradient(to top, rgba(26, 22, 20, 0.06), transparent 70%);
+}
+
+/* ── Centre divider ──────────────────────────────────────────── */
+.mid {
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  padding: 0 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* when showing resolution banner, expand the mid strip slightly */
+.mid > :global(.ResolutionBanner_banner) {
+  margin: 6px 0;
+}
+
+/* ── Player header row ───────────────────────────────────────── */
+.playerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chip {
+  border: 1.5px solid var(--paper);
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-family: var(--font-display);
+  background: var(--blood);
+  color: var(--paper);
+  letter-spacing: 0.05em;
+}
+
+.hintText {
+  font-family: var(--font-hand);
+  font-size: 12px;
+  color: var(--blood);
+}
+
+/* ── Action row ──────────────────────────────────────────────── */
+.actionRow {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+
+.rerollBtn {
+  flex: 1;
+  border: 2px solid currentColor;
+  border-radius: var(--r-btn);
+  padding: 7px 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  background: transparent;
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rerollBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.rerollBtn:active:not(:disabled) {
+  background: rgba(26, 22, 20, 0.08);
+}
+
+.commitBtn {
+  flex: 2;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--blood);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  padding: 10px 12px;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  cursor: pointer;
+}
+
+.commitBtn:disabled {
+  background: var(--paper-2);
+  color: var(--ink);
+  border-color: var(--muted);
+  box-shadow: none;
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ── Hold button fills remaining space ───────────────────────── */
+.actionRow > :global([class*="holdBtn"]) {
+  flex: 2;
+}

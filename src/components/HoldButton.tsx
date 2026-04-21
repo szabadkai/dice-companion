@@ -1,0 +1,47 @@
+import styles from './HoldButton.module.css';
+
+interface Props {
+  progress: number;   // 0–1
+  ready: boolean;
+  label: string;
+  subLabel?: string;
+  onHoldStart: () => void;
+  onHoldEnd: () => void;
+  disabled?: boolean;
+}
+
+export function HoldButton({ progress, ready, label, subLabel, onHoldStart, onHoldEnd, disabled }: Props) {
+  const fillPct = Math.round(progress * 100);
+
+  const cls = [
+    styles.holdBtn,
+    ready ? styles.ready : progress > 0 ? styles.charging : styles.idle,
+    disabled ? styles.disabled : '',
+  ].filter(Boolean).join(' ');
+
+  return (
+    <button
+      className={cls}
+      onPointerDown={disabled ? undefined : onHoldStart}
+      onPointerUp={disabled ? undefined : onHoldEnd}
+      onPointerLeave={disabled ? undefined : onHoldEnd}
+      onPointerCancel={disabled ? undefined : onHoldEnd}
+      aria-label={label}
+      aria-disabled={disabled}
+      // prevent context menu on long-press
+      onContextMenu={e => e.preventDefault()}
+    >
+      {/* fill bar */}
+      {!disabled && (
+        <span
+          className={styles.fill}
+          style={{ width: `${fillPct}%` }}
+          aria-hidden="true"
+        />
+      )}
+
+      <span className={styles.lbl}>{label}</span>
+      {subLabel && <span className={styles.sub}>{subLabel}</span>}
+    </button>
+  );
+}

@@ -1,0 +1,47 @@
+.tray {
+  flex: 1;
+  border: 2px dashed currentColor;
+  border-radius: var(--r-card);
+  padding: 10px 8px;
+  position: relative;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0 8px,
+    rgba(26, 22, 20, 0.03) 8px 9px
+  );
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  position: absolute;
+  top: -9px;
+  left: 10px;
+  background: var(--paper);
+  padding: 0 6px;
+  font-family: var(--font-hand);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.diceGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: flex-start;
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hint {
+  font-family: var(--font-hand);
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
