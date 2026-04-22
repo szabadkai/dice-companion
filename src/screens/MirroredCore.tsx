@@ -42,7 +42,7 @@ export function MirroredCore() {
       : undefined;
 
   return (
-    <div className={styles.screen}>
+    <div className={`${styles.screen} ${phase === 'rolling' ? styles.screenRolling : ''}`}>
       {/* ── Header ─────────────────────────────────── */}
       <header className={styles.header}>
         <div className={styles.title}>⚔ DUEL · ROUND {round}</div>

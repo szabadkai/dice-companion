@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import {
   generatePool, rollDice, rerollSelected, toggleSelect, resolveExchange,
-  REROLL_TOKENS,
+  REROLL_TOKENS, ROLL_ANIM_MS,
 } from './game';
 import { loadState, loadLog, saveState, saveLog } from './persist';
 import { HAPTIC } from './haptics';
@@ -109,54 +109,77 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
 
     triggerRoll() {
-      const { playerA, playerB, round } = get();
+      const { playerA, playerB, round, phase } = get();
+      if (phase === 'rolling') return;
+
       HAPTIC.rollStart();
 
-      const atkDice = rollDice(generatePool(playerA.atkCount, playerA.defCount, playerA.magCount));
-      const defDice = rollDice(generatePool(playerB.atkCount, playerB.defCount, playerB.magCount));
-
-      const { atkDice: resolvedAtk, defDice: resolvedDef, resolution } =
-        resolveExchange(atkDice, defDice);
-
-      const entry: LogEntry = {
-        id: logId(),
-        round,
-        playerA: {
-          atkCount: playerA.atkCount,
-          defCount: playerA.defCount,
-          magCount: playerA.magCount,
-          faces: resolvedAtk.map(d => d.face as DieFace),
-        },
-        playerB: {
-          atkCount: playerB.atkCount,
-          defCount: playerB.defCount,
-          magCount: playerB.magCount,
-          faces: resolvedDef.map(d => d.face as DieFace),
-        },
-        resolution,
-        timestamp: Date.now(),
-      };
-
-      const newLog = [...get().log, entry];
-      saveLog(newLog);
-
       set(s => ({
-        phase: 'resolved',
-        resolution,
-        log: newLog,
+        phase: 'rolling',
+        resolution: null,
         playerA: {
           ...s.playerA,
-          dice: resolvedAtk,
+          dice: generatePool(playerA.atkCount, playerA.defCount, playerA.magCount),
           holdProgress: 0,
           ready: false,
         },
         playerB: {
           ...s.playerB,
-          dice: resolvedDef,
+          dice: generatePool(playerB.atkCount, playerB.defCount, playerB.magCount),
           holdProgress: 0,
           ready: false,
         },
       }));
+
+      setTimeout(() => {
+        const current = get();
+        const atkDice = rollDice(current.playerA.dice);
+        const defDice = rollDice(current.playerB.dice);
+
+        const { atkDice: resolvedAtk, defDice: resolvedDef, resolution } =
+          resolveExchange(atkDice, defDice);
+
+        const entry: LogEntry = {
+          id: logId(),
+          round,
+          playerA: {
+            atkCount: playerA.atkCount,
+            defCount: playerA.defCount,
+            magCount: playerA.magCount,
+            faces: resolvedAtk.map(d => d.face as DieFace),
+          },
+          playerB: {
+            atkCount: playerB.atkCount,
+            defCount: playerB.defCount,
+            magCount: playerB.magCount,
+            faces: resolvedDef.map(d => d.face as DieFace),
+          },
+          resolution,
+          timestamp: Date.now(),
+        };
+
+        const newLog = [...get().log, entry];
+        saveLog(newLog);
+        HAPTIC.rollImpact();
+
+        set(s => ({
+          phase: 'resolved',
+          resolution,
+          log: newLog,
+          playerA: {
+            ...s.playerA,
+            dice: resolvedAtk,
+            holdProgress: 0,
+            ready: false,
+          },
+          playerB: {
+            ...s.playerB,
+            dice: resolvedDef,
+            holdProgress: 0,
+            ready: false,
+          },
+        }));
+      }, ROLL_ANIM_MS);
     },
 
     toggleDie(player, dieId) {
@@ -168,29 +191,55 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
 
     reroll(player) {
-      set(s => {
-        const p = player === 'a' ? s.playerA : s.playerB;
-        if (p.rerollTokens <= 0) return {};
-        const selected = p.dice.filter(d => d.selected);
-        if (selected.length === 0) return {};
+      const state = get();
+      if (state.phase !== 'resolved') return;
 
-        // Reroll the full combined pool with selection applied
-        const newDice = rerollSelected(p.dice);
-        // Re-resolve the exchange with updated dice
+      const p = player === 'a' ? state.playerA : state.playerB;
+      if (p.rerollTokens <= 0) {
+        HAPTIC.cancel();
+        return;
+      }
+
+      const selected = p.dice.filter(d => d.selected);
+      if (selected.length === 0) {
+        HAPTIC.cancel();
+        return;
+      }
+
+      HAPTIC.reroll();
+
+      const rerolledDice = rerollSelected(p.dice);
+      set(s => {
+        if (player === 'a') {
+          return {
+            phase: 'rolling',
+            resolution: null,
+            playerA: { ...s.playerA, dice: rerolledDice, rerollTokens: s.playerA.rerollTokens - 1 },
+          };
+        }
+
+        return {
+          phase: 'rolling',
+          resolution: null,
+          playerB: { ...s.playerB, dice: rerolledDice, rerollTokens: s.playerB.rerollTokens - 1 },
+        };
+      });
+
+      setTimeout(() => {
+        const current = get();
         const { atkDice, defDice, resolution } = resolveExchange(
-          player === 'a' ? newDice : s.playerA.dice,
-          player === 'b' ? newDice : s.playerB.dice,
+          current.playerA.dice,
+          current.playerB.dice,
         );
 
-        const updated = { ...p, dice: player === 'a' ? atkDice : defDice, rerollTokens: p.rerollTokens - 1 };
-        const otherUpdated = player === 'a'
-          ? { ...s.playerB, dice: defDice }
-          : { ...s.playerA, dice: atkDice };
-
-        return player === 'a'
-          ? { playerA: updated, playerB: otherUpdated, resolution }
-          : { playerA: otherUpdated, playerB: updated, resolution };
-      });
+        HAPTIC.rollImpact();
+        set(s => ({
+          phase: 'resolved',
+          resolution,
+          playerA: { ...s.playerA, dice: atkDice },
+          playerB: { ...s.playerB, dice: defDice },
+        }));
+      }, ROLL_ANIM_MS);
     },
 
     commit() {

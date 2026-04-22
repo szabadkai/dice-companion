@@ -27,6 +27,7 @@ export function DiceTray({ dice, atkCount, defCount, phase, label, onTapDie }: P
             <Die
               key={d.id}
               die={d}
+              rolling={phase === 'rolling'}
               onTap={phase === 'resolved' ? onTapDie : undefined}
             />
           ))}

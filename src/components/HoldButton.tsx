@@ -1,4 +1,5 @@
 import styles from './HoldButton.module.css';
+import { HAPTIC } from '../haptics';
 
 interface Props {
   progress: number;   // 0–1
@@ -22,7 +23,10 @@ export function HoldButton({ progress, ready, label, subLabel, onHoldStart, onHo
   return (
     <button
       className={cls}
-      onPointerDown={disabled ? undefined : onHoldStart}
+      onPointerDown={disabled ? undefined : () => {
+        HAPTIC.chargeStart();
+        onHoldStart();
+      }}
       onPointerUp={disabled ? undefined : onHoldEnd}
       onPointerLeave={disabled ? undefined : onHoldEnd}
       onPointerCancel={disabled ? undefined : onHoldEnd}

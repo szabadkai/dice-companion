@@ -11,7 +11,12 @@ export function vibrate(pattern: number | number[]): void {
 }
 
 export const HAPTIC = {
-  chargeReady: () => vibrate(15),
-  rollStart:   () => vibrate([10, 50, 10]),
+  chargeStart: () => vibrate(8),
+  chargeReady: () => vibrate(18),
+  rollStart:   () => vibrate([8, 35, 8]),
+  rollImpact:  () => vibrate([22, 18, 14]),
+  reroll:      () => vibrate([12, 24, 12]),
   commit:      () => vibrate(30),
+  cancel:      () => vibrate([30, 20, 30]),
+  tap:         () => vibrate(10),
 };
