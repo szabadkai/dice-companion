@@ -7,17 +7,18 @@
 }
 
 .screenRolling {
-  animation: screenShake 340ms cubic-bezier(.36, .07, .19, .97) 2;
+  animation: screenShake 420ms cubic-bezier(.36, .07, .19, .97) 2;
 }
 
 @keyframes screenShake {
-  0%   { transform: translate(0, 0); }
-  15%  { transform: translate(-1px, 1px); }
-  30%  { transform: translate(2px, -1px); }
-  45%  { transform: translate(-2px, 1px); }
-  60%  { transform: translate(1px, -1px); }
-  75%  { transform: translate(-1px, 0); }
-  100% { transform: translate(0, 0); }
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  12%  { transform: translate(-2px, 1px) rotate(-0.35deg); }
+  24%  { transform: translate(3px, -2px) rotate(0.4deg); }
+  36%  { transform: translate(-3px, 2px) rotate(-0.45deg); }
+  48%  { transform: translate(2px, -1px) rotate(0.3deg); }
+  62%  { transform: translate(-2px, 1px) rotate(-0.25deg); }
+  76%  { transform: translate(1px, -1px) rotate(0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {

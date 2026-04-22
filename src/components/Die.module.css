@@ -32,17 +32,24 @@
 .tiny  { width: 18px; height: 18px; font-size: 9px;  border-radius: 4px; box-shadow: 1px 1px 0 var(--ink); }
 
 .rolling {
-  animation: dieTumble 420ms linear infinite;
+  animation:
+    dieArc 420ms cubic-bezier(.22, .61, .36, 1) infinite,
+    dieSpin 320ms linear infinite;
+  animation-delay: var(--roll-delay, 0ms), var(--roll-delay, 0ms);
   will-change: transform;
 }
 
-@keyframes dieTumble {
-  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
-  20%  { transform: translate(-1px, 1px) rotate(28deg) scale(1.02); }
-  40%  { transform: translate(1px, -1px) rotate(70deg) scale(0.98); }
-  60%  { transform: translate(-1px, -1px) rotate(128deg) scale(1.03); }
-  80%  { transform: translate(1px, 1px) rotate(190deg) scale(0.99); }
-  100% { transform: translate(0, 0) rotate(240deg) scale(1); }
+@keyframes dieArc {
+  0%   { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(var(--roll-x, 2px), calc(var(--roll-y, -2px) - 4px)) scale(1.06); }
+  50%  { transform: translate(calc(var(--roll-x, 2px) * -1), var(--roll-y, -2px)) scale(0.97); }
+  75%  { transform: translate(var(--roll-x, 2px), calc(var(--roll-y, -2px) + 2px)) scale(1.03); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes dieSpin {
+  0%   { rotate: 0deg; }
+  100% { rotate: var(--roll-rot, 360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {

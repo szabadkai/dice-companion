@@ -23,11 +23,12 @@ export function DiceTray({ dice, atkCount, defCount, phase, label, onTapDie }: P
 
       {dice.length > 0 ? (
         <div className={styles.diceGrid}>
-          {dice.map(d => (
+          {dice.map((d, i) => (
             <Die
               key={d.id}
               die={d}
               rolling={phase === 'rolling'}
+              index={i}
               onTap={phase === 'resolved' ? onTapDie : undefined}
             />
           ))}

@@ -9,6 +9,7 @@ import {
 } from './game';
 import { loadState, loadLog, saveState, saveLog } from './persist';
 import { HAPTIC } from './haptics';
+import { playRollImpact, playRollWhoosh } from './sound';
 import type { DieFace, GamePhase, LogEntry, PlayerState, Resolution } from './types';
 
 // ─── Helper ───────────────────────────────────────────────────────
@@ -113,6 +114,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       if (phase === 'rolling') return;
 
       HAPTIC.rollStart();
+      playRollWhoosh();
 
       set(s => ({
         phase: 'rolling',
@@ -161,6 +163,7 @@ export const useGameStore = create<GameStore>((set, get) => {
         const newLog = [...get().log, entry];
         saveLog(newLog);
         HAPTIC.rollImpact();
+        playRollImpact();
 
         set(s => ({
           phase: 'resolved',
@@ -207,6 +210,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       }
 
       HAPTIC.reroll();
+      playRollWhoosh();
 
       const rerolledDice = rerollSelected(p.dice);
       set(s => {
@@ -233,6 +237,7 @@ export const useGameStore = create<GameStore>((set, get) => {
         );
 
         HAPTIC.rollImpact();
+        playRollImpact();
         set(s => ({
           phase: 'resolved',
           resolution,

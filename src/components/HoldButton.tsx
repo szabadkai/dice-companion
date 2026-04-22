@@ -1,5 +1,6 @@
 import styles from './HoldButton.module.css';
 import { HAPTIC } from '../haptics';
+import { startChargeTone, stopChargeTone } from '../sound';
 
 interface Props {
   progress: number;   // 0–1
@@ -25,11 +26,21 @@ export function HoldButton({ progress, ready, label, subLabel, onHoldStart, onHo
       className={cls}
       onPointerDown={disabled ? undefined : () => {
         HAPTIC.chargeStart();
+        startChargeTone();
         onHoldStart();
       }}
-      onPointerUp={disabled ? undefined : onHoldEnd}
-      onPointerLeave={disabled ? undefined : onHoldEnd}
-      onPointerCancel={disabled ? undefined : onHoldEnd}
+      onPointerUp={disabled ? undefined : () => {
+        stopChargeTone(ready);
+        onHoldEnd();
+      }}
+      onPointerLeave={disabled ? undefined : () => {
+        stopChargeTone(ready);
+        onHoldEnd();
+      }}
+      onPointerCancel={disabled ? undefined : () => {
+        stopChargeTone(ready);
+        onHoldEnd();
+      }}
       aria-label={label}
       aria-disabled={disabled}
       // prevent context menu on long-press
