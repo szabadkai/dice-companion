@@ -121,7 +121,18 @@ export function MirroredCore() {
         <div className={styles.mid}>
           {isResolvedPhase && resolution
             ? <ResolutionBanner resolution={resolution} />
-            : <span>◆ ⚔ HOLD BOTH · SYNC ROLL ⚔ ◆</span>
+            : (
+              <div className={styles.midContent}>
+                <span>◆ ⚔ HOLD BOTH · SYNC ROLL ⚔ ◆</span>
+                <button
+                  className={styles.soloBtn}
+                  onPointerDown={triggerRoll}
+                  aria-label="Solo roll fallback"
+                >
+                  SOLO ROLL
+                </button>
+              </div>
+            )
           }
         </div>
 

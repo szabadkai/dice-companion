@@ -32,7 +32,7 @@ const FACE_TABLE: Record<DieType, DieFace[]> = {
 
 // ─── Constants ────────────────────────────────────────────────────
 export const HOLD_CHARGE_MS  = 600;
-export const SYNC_WINDOW_MS  = 250;
+export const SYNC_WINDOW_MS  = 700;
 export const REROLL_TOKENS   = 1;
 
 // ─── Helpers ──────────────────────────────────────────────────────
